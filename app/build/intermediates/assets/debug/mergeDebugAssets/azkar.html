@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>أذكاري</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Naskh+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1f14;
+    --bg2: #122118;
+    --card: #16291d;
+    --card2: #1a2f22;
+    --border: #2a4a35;
+    --gold: #c9a84c;
+    --gold2: #e8c96a;
+    --gold-dim: #7a6330;
+    --green: #2e7d52;
+    --green2: #3a9e68;
+    --text: #e8dfc8;
+    --text-dim: #9a8f7a;
+    --white: #f5f0e8;
+    --red: #c0392b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Naskh Arabic', serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, #0a1a10 0%, #1a3326 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px 12px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-title {
+    font-family: 'Amiri', serif;
+    font-size: 26px;
+    color: var(--gold);
+    letter-spacing: 1px;
+  }
+  .header-sub {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 2px;
+    font-family: sans-serif;
+    direction: ltr;
+  }
+
+  /* Nav Tabs */
+  .nav {
+    display: flex;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav-btn {
+    flex: none;
+    padding: 12px 16px;
+    font-family: 'Noto Naskh Arabic', serif;
+    font-size: 13px;
+    color: var(--text-dim);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .nav-btn.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+
+  /* Pages */
+  .page { display: none; padding: 16px; }
+  .page.active { display: block; }
+
+  /* Zikr Card */
+  .zikr-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+  .zikr-card::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 3px; height: 100%;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+  }
+  .zikr-number {
+    font-size: 11px;
+    color: var(--gold-dim);
+    font-family: sans-serif;
+    direction: ltr;
+    margin-bottom: 10px;
+  }
+  .zikr-arabic {
+    font-family: 'Amiri', serif;
+    font-size: 22px;
+    line-height: 1.9;
+    color: var(--white);
+    margin-bottom: 12px;
+    text-align: right;
+  }
+  .zikr-translation {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    direction: ltr;
+    text-align: left;
+    font-family: sans-serif;
+  }
+  .zikr-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .zikr-count-badge {
+    font-size: 11px;
+    color: var(--gold);
+    background: rgba(201,168,76,0.1);
+    border: 1px solid rgba(201,168,76,0.3);
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-family: sans-serif;
+    direction: ltr;
+  }
+  .zikr-done-btn {
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--green);
+    background: none;
+    color: var(--green2);
+    cursor: pointer;
+    font-family: 'Noto Naskh Arabic', serif;
+    transition: all 0.2s;
+  }
+  .zikr-done-btn.done {
+    background: var(--green);
+    color: white;
+  }
+  .zikr-card.done-card {
+    opacity: 0.5;
+  }
+
+  /* Progress bar */
+  .progress-bar-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .progress-bar {
+    flex: 1;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(to right, var(--green), var(--gold));
+    border-radius: 3px;
+    transition: width 0.4s;
+  }
+  .progress-text {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-family: sans-serif;
+    direction: ltr;
+    white-space: nowrap;
+  }
+  .reset-btn {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-family: sans-serif;
+  }
+
+  /* Tasbeeh */
+  .tasbeeh-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+  }
+  .tasbeeh-label {
+    font-family: 'Amiri', serif;
+    font-size: 20px;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+  .tasbeeh-sublabel {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-family: sans-serif;
+    margin-bottom: 30px;
+  }
+  .tasbeeh-circle {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 3px solid var(--gold);
+    background: radial-gradient(circle at center, #1a3326 0%, #0d1f14 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: 0 0 30px rgba(201,168,76,0.15);
+    transition: transform 0.1s, box-shadow 0.2s;
+    margin-bottom: 20px;
+  }
+  .tasbeeh-circle:active {
+    transform: scale(0.95);
+    box-shadow: 0 0 50px rgba(201,168,76,0.3);
+  }
+  .tasbeeh-num {
+    font-family: 'Amiri', serif;
+    font-size: 64px;
+    color: var(--gold2);
+    line-height: 1;
+  }
+  .tasbeeh-tap {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-family: sans-serif;
+    margin-top: 6px;
+  }
+  .tasbeeh-controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .t-btn {
+    padding: 10px 24px;
+    border-radius: 24px;
+    font-family: 'Noto Naskh Arabic', serif;
+    font-size: 14px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    transition: all 0.2s;
+  }
+  .t-btn.primary {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+  .t-btn.danger {
+    border-color: var(--red);
+    color: var(--red);
+  }
+  .tasbeeh-selector {
+    width: 100%;
+    max-width: 320px;
+  }
+  .tasbeeh-selector-title {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+    text-align: center;
+    font-family: sans-serif;
+  }
+  .tasbeeh-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .t-opt {
+    padding: 10px 6px;
+    border-radius: 8px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .t-opt.selected {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.08);
+  }
+  .t-opt-ar {
+    font-family: 'Amiri', serif;
+    font-size: 15px;
+    color: var(--white);
+    display: block;
+  }
+  .t-opt-en {
+    font-size: 10px;
+    color: var(--text-dim);
+    font-family: sans-serif;
+    display: block;
+    margin-top: 2px;
+  }
+  .tasbeeh-progress-ring {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+  }
+
+  /* Section divider */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0 12px;
+  }
+  .section-divider-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .section-divider-text {
+    font-family: 'Amiri', serif;
+    font-size: 14px;
+    color: var(--gold-dim);
+    white-space: nowrap;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--green);
+    color: white;
+    padding: 10px 24px;
+    border-radius: 24px;
+    font-family: 'Noto Naskh Arabic', serif;
+    font-size: 14px;
+    z-index: 999;
+    transition: transform 0.3s;
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">أذكاري</div>
+  <div class="header-sub">Daily Azkar</div>
+</div>
+
+<nav class="nav">
+  <button class="nav-btn active" onclick="showPage('morning')">أذكار الصباح</button>
+  <button class="nav-btn" onclick="showPage('evening')">أذكار المساء</button>
+  <button class="nav-btn" onclick="showPage('salah')">أذكار الصلاة</button>
+  <button class="nav-btn" onclick="showPage('tasbeeh')">المسبحة</button>
+</nav>
+
+<!-- MORNING AZKAR -->
+<div class="page active" id="page-morning">
+  <div class="progress-bar-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="prog-morning" style="width:0%"></div></div>
+    <div class="progress-text" id="prog-morning-text">0 / 0</div>
+    <button class="reset-btn" onclick="resetPage('morning')">إعادة</button>
+  </div>
+  <div id="list-morning"></div>
+</div>
+
+<!-- EVENING AZKAR -->
+<div class="page" id="page-evening">
+  <div class="progress-bar-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="prog-evening" style="width:0%"></div></div>
+    <div class="progress-text" id="prog-evening-text">0 / 0</div>
+    <button class="reset-btn" onclick="resetPage('evening')">إعادة</button>
+  </div>
+  <div id="list-evening"></div>
+</div>
+
+<!-- AFTER SALAH AZKAR -->
+<div class="page" id="page-salah">
+  <div class="progress-bar-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="prog-salah" style="width:0%"></div></div>
+    <div class="progress-text" id="prog-salah-text">0 / 0</div>
+    <button class="reset-btn" onclick="resetPage('salah')">إعادة</button>
+  </div>
+  <div id="list-salah"></div>
+</div>
+
+<!-- TASBEEH COUNTER -->
+<div class="page" id="page-tasbeeh">
+  <div class="tasbeeh-wrap">
+    <div class="tasbeeh-label" id="tasbeeh-current-label">سبحان الله</div>
+    <div class="tasbeeh-sublabel" id="tasbeeh-current-en">Subhan Allah</div>
+    <div style="position:relative; width:200px; height:200px; margin-bottom:20px;">
+      <svg class="tasbeeh-progress-ring" viewBox="0 0 200 200">
+        <circle cx="100" cy="100" r="96" fill="none" stroke="#2a4a35" stroke-width="3"/>
+        <circle id="ring-circle" cx="100" cy="100" r="96" fill="none" stroke="#c9a84c"
+          stroke-width="3" stroke-dasharray="603" stroke-dashoffset="603"
+          stroke-linecap="round" transform="rotate(-90 100 100)"
+          style="transition: stroke-dashoffset 0.3s"/>
+      </svg>
+      <div class="tasbeeh-circle" onclick="incrementTasbeeh()" style="position:absolute;top:0;left:0;">
+        <div class="tasbeeh-num" id="tasbeeh-count">0</div>
+        <div class="tasbeeh-tap">اضغط للعد</div>
+      </div>
+    </div>
+    <div class="tasbeeh-controls">
+      <button class="t-btn primary" onclick="nextTasbeeh()">التالي ›</button>
+      <button class="t-btn danger" onclick="resetTasbeeh()">صفر</button>
+    </div>
+    <div class="tasbeeh-selector">
+      <div class="tasbeeh-selector-title">اختر الذكر</div>
+      <div class="tasbeeh-options" id="tasbeeh-options"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const DATA = {
+  morning: [
+    { ar: "أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ\nاللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ", en: "Ayat Al-Kursi – Allah, there is no god but Him, the Ever-Living, the Self-Sustaining.", count: 1 },
+    { ar: "قُلْ هُوَ اللَّهُ أَحَدٌ ۝ اللَّهُ الصَّمَدُ ۝ لَمْ يَلِدْ وَلَمْ يُولَدْ ۝ وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ", en: "Surah Al-Ikhlas – Say: He is Allah, the One.", count: 3 },
+    { ar: "أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ", en: "We have reached the morning and the whole dominion belongs to Allah. Praise is to Allah.", count: 1 },
+    { ar: "اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ النُّشُورُ", en: "O Allah, by You we enter the morning, by You we enter the evening, by You we live and die.", count: 1 },
+    { ar: "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَٰهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ", en: "Sayyid Al-Istighfar – O Allah, You are my Lord, none has the right to be worshipped but You.", count: 1 },
+    { ar: "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ", en: "Glory is to Allah and praise is to Him.", count: 100 },
+    { ar: "اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ", en: "O Allah, send prayers and peace upon our Prophet Muhammad.", count: 10 },
+    { ar: "رَضِيتُ بِاللَّهِ رَبًّا، وَبِالإِسْلاَمِ دِينًا، وَبِمُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ نَبِيًّا", en: "I am pleased with Allah as my Lord, with Islam as my religion, and with Muhammad ﷺ as my Prophet.", count: 3 },
+    { ar: "يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ، أَصْلِحْ لِي شَأْنِي كُلَّهُ، وَلَا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ", en: "O Ever-Living, O Self-Sustaining, by Your mercy I seek help. Rectify for me all my affairs.", count: 1 },
+    { ar: "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ", en: "In the Name of Allah, with Whose Name nothing can cause harm on earth or in heaven.", count: 3 },
+  ],
+  evening: [
+    { ar: "أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ\nاللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ", en: "Ayat Al-Kursi – read in the evening for protection.", count: 1 },
+    { ar: "قُلْ هُوَ اللَّهُ أَحَدٌ ۝ اللَّهُ الصَّمَدُ ۝ لَمْ يَلِدْ وَلَمْ يُولَدْ ۝ وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ", en: "Surah Al-Ikhlas – read 3 times in the evening.", count: 3 },
+    { ar: "أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ، لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ", en: "We have reached the evening and the whole dominion belongs to Allah.", count: 1 },
+    { ar: "اللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ الْمَصِيرُ", en: "O Allah, by You we enter the evening, by You we enter the morning, by You we live and die.", count: 1 },
+    { ar: "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَٰهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ", en: "Sayyid Al-Istighfar – O Allah, You are my Lord, none has the right to be worshipped but You.", count: 1 },
+    { ar: "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ", en: "I seek refuge in the perfect words of Allah from the evil of what He has created.", count: 3 },
+    { ar: "اللَّهُمَّ عَافِنِي فِي بَدَنِي، اللَّهُمَّ عَافِنِي فِي سَمْعِي، اللَّهُمَّ عَافِنِي فِي بَصَرِي", en: "O Allah, grant me health in my body. O Allah, grant me health in my hearing. O Allah, grant me health in my sight.", count: 3 },
+    { ar: "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ", en: "Glory is to Allah and praise is to Him.", count: 100 },
+    { ar: "اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ", en: "O Allah, send prayers and peace upon our Prophet Muhammad.", count: 10 },
+  ],
+  salah: [
+    { ar: "أَسْتَغْفِرُ اللَّهَ", en: "I seek forgiveness from Allah.", count: 3 },
+    { ar: "اللَّهُمَّ أَنْتَ السَّلَامُ وَمِنْكَ السَّلَامُ، تَبَارَكْتَ يَا ذَا الْجَلَالِ وَالإِكْرَامِ", en: "O Allah, You are Peace and from You comes peace. Blessed are You, O Possessor of glory and honor.", count: 1 },
+    { ar: "لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ", en: "None has the right to be worshipped but Allah alone, with no partner. His is all sovereignty and praise.", count: 1 },
+    { ar: "سُبْحَانَ اللَّهِ", en: "Glory is to Allah.", count: 33 },
+    { ar: "الْحَمْدُ لِلَّهِ", en: "Praise is to Allah.", count: 33 },
+    { ar: "اللَّهُ أَكْبَرُ", en: "Allah is the Greatest.", count: 33 },
+    { ar: "لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ", en: "None has the right to be worshipped but Allah alone. His is all sovereignty and praise, and He is over all things competent.", count: 1 },
+    { ar: "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ", en: "O Allah, send prayers upon Muhammad and upon the family of Muhammad.", count: 10 },
+    { ar: "آيَةُ الْكُرْسِيّ", en: "Ayat Al-Kursi – recite after every obligatory prayer.", count: 1 },
+  ]
+};
+
+const TASBEEH_LIST = [
+  { ar: "سبحان الله", en: "Subhan Allah", target: 33 },
+  { ar: "الحمد لله", en: "Alhamdulillah", target: 33 },
+  { ar: "الله أكبر", en: "Allahu Akbar", target: 33 },
+  { ar: "لا إله إلا الله", en: "La ilaha illallah", target: 100 },
+  { ar: "أستغفر الله", en: "Astaghfirullah", target: 100 },
+  { ar: "سبحان الله وبحمده", en: "Subhan Allahi wa bihamdihi", target: 100 },
+];
+
+let state = JSON.parse(localStorage.getItem('azkar_state') || '{}');
+let tasbeehIdx = 0;
+let tasbeehCount = 0;
+
+function saveState() {
+  localStorage.setItem('azkar_state', JSON.stringify(state));
+}
+
+function renderList(key) {
+  const list = document.getElementById('list-' + key);
+  list.innerHTML = '';
+  DATA[key].forEach((item, i) => {
+    const done = state[key + '_' + i] || false;
+    const card = document.createElement('div');
+    card.className = 'zikr-card' + (done ? ' done-card' : '');
+    card.id = 'card-' + key + '-' + i;
+    card.innerHTML = `
+      <div class="zikr-number">${i + 1} / ${DATA[key].length}</div>
+      <div class="zikr-arabic">${item.ar}</div>
+      <div class="zikr-translation">${item.en}</div>
+      <div class="zikr-footer">
+        <span class="zikr-count-badge">× ${item.count}</span>
+        <button class="zikr-done-btn ${done ? 'done' : ''}" onclick="toggleDone('${key}', ${i})">
+          ${done ? '✓ تم' : 'تم'}
+        </button>
+      </div>`;
+    list.appendChild(card);
+  });
+  updateProgress(key);
+}
+
+function toggleDone(key, i) {
+  state[key + '_' + i] = !state[key + '_' + i];
+  saveState();
+  renderList(key);
+  if (state[key + '_' + i]) {
+    const done = DATA[key].filter((_, j) => state[key + '_' + j]).length;
+    if (done === DATA[key].length) showToast('أحسنت! أكملت الأذكار 🌟');
+  }
+}
+
+function updateProgress(key) {
+  const total = DATA[key].length;
+  const done = DATA[key].filter((_, i) => state[key + '_' + i]).length;
+  const pct = total ? (done / total * 100) : 0;
+  document.getElementById('prog-' + key).style.width = pct + '%';
+  document.getElementById('prog-' + key + '-text').textContent = done + ' / ' + total;
+}
+
+function resetPage(key) {
+  DATA[key].forEach((_, i) => delete state[key + '_' + i]);
+  saveState();
+  renderList(key);
+}
+
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// Tasbeeh
+function renderTasbeehOptions() {
+  const wrap = document.getElementById('tasbeeh-options');
+  wrap.innerHTML = '';
+  TASBEEH_LIST.forEach((t, i) => {
+    const el = document.createElement('div');
+    el.className = 't-opt' + (i === tasbeehIdx ? ' selected' : '');
+    el.innerHTML = `<span class="t-opt-ar">${t.ar}</span><span class="t-opt-en">${t.en}</span>`;
+    el.onclick = () => selectTasbeeh(i);
+    wrap.appendChild(el);
+  });
+}
+
+function selectTasbeeh(i) {
+  tasbeehIdx = i;
+  tasbeehCount = 0;
+  updateTasbeeh();
+  renderTasbeehOptions();
+}
+
+function incrementTasbeeh() {
+  const target = TASBEEH_LIST[tasbeehIdx].target;
+  if (tasbeehCount >= target) { tasbeehCount = 0; }
+  else { tasbeehCount++; }
+  updateTasbeeh();
+  if (tasbeehCount === target) showToast('اكتمل العدد ✓');
+}
+
+function nextTasbeeh() {
+  tasbeehIdx = (tasbeehIdx + 1) % TASBEEH_LIST.length;
+  tasbeehCount = 0;
+  updateTasbeeh();
+  renderTasbeehOptions();
+}
+
+function resetTasbeeh() {
+  tasbeehCount = 0;
+  updateTasbeeh();
+}
+
+function updateTasbeeh() {
+  const t = TASBEEH_LIST[tasbeehIdx];
+  document.getElementById('tasbeeh-count').textContent = tasbeehCount;
+  document.getElementById('tasbeeh-current-label').textContent = t.ar;
+  document.getElementById('tasbeeh-current-en').textContent = t.en;
+  const circumference = 2 * Math.PI * 96;
+  const progress = tasbeehCount / t.target;
+  const offset = circumference * (1 - progress);
+  document.getElementById('ring-circle').style.strokeDashoffset = offset;
+}
+
+// Toast
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Init
+renderList('morning');
+renderList('evening');
+renderList('salah');
+renderTasbeehOptions();
+updateTasbeeh();
+</script>
+</body>
+</html>
