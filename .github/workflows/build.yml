@@ -27,18 +27,17 @@ jobs:
         run: yes | sdkmanager --licenses || true
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug --info 2>&1 | tail -50
+        run: ./gradlew assembleDebug
 
-      - name: Show APK info
+      - name: Show APK contents
         run: |
-          find . -name "*.apk"
           ls -lh app/build/outputs/apk/debug/app-debug.apk
+          unzip -l app/build/outputs/apk/debug/app-debug.apk
 
       - name: Release APK
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.6
-          name: Azkar App v1.6
+          tag_name: v1.7
           files: app/build/outputs/apk/debug/app-debug.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
