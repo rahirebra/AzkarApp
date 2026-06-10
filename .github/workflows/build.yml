@@ -27,7 +27,7 @@ jobs:
         run: yes | sdkmanager --licenses || true
 
       - name: Build Debug APK
-        run: gradle assembleDebug
+        run: ./gradlew assembleDebug
 
       - name: Show APK info
         run: |
