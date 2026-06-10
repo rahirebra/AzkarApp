@@ -29,9 +29,12 @@ jobs:
       - name: Build Debug APK
         run: ./gradlew assembleDebug
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: AzkarApp
-          path: app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
+      - name: Create Release
+        run: |
+          gh release delete v2.0 --yes 2>/dev/null || true
+          gh release create v2.0 \
+            app/build/outputs/apk/debug/app-debug.apk \
+            --title "Azkar App v2.0" \
+            --notes "Latest build"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
